@@ -1,6 +1,9 @@
-import { db } from './connection';
+import { db } from "./connection";
 
-export const createTable = async (tableName: string, columnsAndConstraints: string[]) => {
+export const createTable = async (
+  tableName: string,
+  columnsAndConstraints: string[]
+) => {
   const columnsSql = columnsAndConstraints.join(",\n  ");
   const createTableSQL = `
     CREATE TABLE IF NOT EXISTS ${tableName} (

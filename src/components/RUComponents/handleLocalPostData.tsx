@@ -7,7 +7,7 @@ export const handleLocalPostData = async ({
   dataType,
 }: {
   route: string;
-  data: FormData | object;
+  data: FormData | Record<string, any>;
   formatted?: boolean;
   dataType?: "json" | "formData";
 }) => {
@@ -26,6 +26,9 @@ export const handleLocalPostData = async ({
     }
 
     const table = route.replace("/", ""); // e.g., "/courses" → "courses"
+
+    // Removed duplicate check here
+
     return await insertData({ table, data: parsedData });
   } catch (err) {
     console.error("handleLocalPostData error:", err);

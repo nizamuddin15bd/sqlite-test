@@ -1,7 +1,7 @@
 import { deleteLocalData } from "@/src/components/RUComponents/deleteLocalData";
 import ListFooter from "@/src/components/RUComponents/ListFooter";
 import { usePagination } from "@/src/components/RUComponents/useLocalPagination";
-import { Ionicons } from "@expo/vector-icons";
+import { Feather, Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useState } from "react";
 import {
@@ -30,6 +30,7 @@ const Courses = () => {
     search: searchQuery, // passed as safe string
     sortByOrder: "desc",
   });
+  // console.log("courses data", data);
   const handleSearch = (text: string) => {
     setSearchQuery(text);
   };
@@ -83,14 +84,33 @@ const Courses = () => {
               <Text style={styles.itemText1}>{item.name}</Text>
               <Text style={styles.itemText2}>INR {item.fees}</Text>
             </View>
-            <TouchableOpacity
-              style={styles.deletedBtn}
-              onPress={() => handleDeleteCourse(item.id!)}
-            >
-              <Text>
-                <Ionicons name="trash" size={20} color="red" />
-              </Text>
-            </TouchableOpacity>
+            <View style={styles.editandDeleteContainer}>
+              <TouchableOpacity
+                style={styles.deletedBtn}
+                onPress={() => handleDeleteCourse(item.id!)}
+              >
+                <Text>
+                  <Ionicons name="trash" size={24} color="red" />
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.EditBtn}
+                onPress={() =>
+                  router.push({
+                    pathname: "/(details)/EditCourse",
+                    params: {
+                      id: item.id.toString(),
+                      name: item.name,
+                      fees: item.fees,
+                    },
+                  })
+                }
+              >
+                <Text>
+                  <Feather name="edit" size={24} color="black" />
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
         )}
       />
@@ -117,15 +137,23 @@ const styles = StyleSheet.create({
   },
   courseItem: {
     flexDirection: "row",
-    height: 80,
+    height: 100,
     width: "100%",
     backgroundColor: "#e4eae4",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 10,
-    paddingVertical: 4,
+    marginBottom: 15,
+    paddingVertical: 10,
+    borderRadius: 10,
+    paddingHorizontal: 10,
+
     // borderBottomWidth: 1,
     // borderColor: "#ccc",
+  },
+  itemContainer: {
+    alignItems: "flex-start",
+    justifyContent: "center",
+    gap: 8,
   },
   addBtn: {
     backgroundColor: "green",
@@ -144,21 +172,21 @@ const styles = StyleSheet.create({
     fontWeight: "800",
     color: "white",
   },
-  deletedBtn: {
-    position: "absolute",
-    top: 0,
-    right: 2,
-    padding: 10,
-    borderTopLeftRadius: 30,
-    borderBottomLeftRadius: 30,
-    borderBottomRightRadius: 20,
-    backgroundColor: "green",
-  },
-  itemContainer: {
+  editandDeleteContainer: {
+    flexDirection: "column",
     alignItems: "center",
-    justifyContent: "center",
-    width: "90%",
+    justifyContent: "space-between",
+
+    height: "100%",
   },
+
+  deletedBtn: {
+    padding: 5,
+  },
+  EditBtn: {
+    padding: 5,
+  },
+
   itemText1: {
     fontSize: 24,
     fontWeight: "bold",

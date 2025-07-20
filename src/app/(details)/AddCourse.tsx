@@ -1,83 +1,110 @@
 import { handleLocalPostData } from "@/src/components/RUComponents/handleLocalPostData";
+import { getSingleRecordByColumn } from "@/src/db/dbGlobalFn/getSingleRecordByColumn";
 import { router } from "expo-router";
 import React, { useState } from "react";
-import { Button, StyleSheet, Text, TextInput, View } from "react-native";
+import {
+  Alert,
+  Button,
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableWithoutFeedback,
+  View,
+} from "react-native";
 
 const AddCourse = () => {
   const [name, setName] = useState("");
   const [fees, setFees] = useState("");
+
   const handleAddCourse = async () => {
-    if (name.trim() && fees) {
-      try {
-        const result = await handleLocalPostData({
-          route: "/courses",
-          data: {
-            name,
-            fees: Number(fees),
-          },
-          dataType: "json", // optional
-        });
-        if (result?.success === true) {
-          setName("");
-          setFees("");
-          router.push("/(details)/Courses");
-        }
+    const trimmedName = name.trim();
+    if (!trimmedName || !fees) return;
 
-        if (result?.success === false) {
-          console.error("Failed to insert course:", result.message);
-          // Optionally show error to user
-          return;
-        }
+    try {
+      const existing = await getSingleRecordByColumn(
+        "courses",
+        "name",
+        trimmedName
+      );
+      if (existing) {
+        Alert.alert(
+          "Duplicate Course",
+          `Course "${trimmedName}" already exists.`
+        );
+        return;
+      }
 
+      const result = await handleLocalPostData({
+        route: "/courses",
+        data: { name: trimmedName, fees: Number(fees) },
+        dataType: "json",
+      });
+
+      if (result?.success) {
         setName("");
         setFees("");
-        //   handleRefresh(); // reload course list
-      } catch (error) {
-        console.error("Error adding course:", error);
-        // Optionally show error to user
+        router.push("/(details)/Courses");
+      } else {
+        Alert.alert(
+          "Insert Failed",
+          result.message || "Failed to insert course"
+        );
       }
+    } catch (error) {
+      Alert.alert("Error", "An unexpected error occurred");
+      console.error("Error adding course:", error);
     }
   };
+
   return (
-    <View style={styles.container}>
-      <Text>AddCourse</Text>
-      <View
-        style={{
-          width: "100%",
-          marginTop: 20,
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <TextInput
-          placeholder="Course Name"
-          value={name}
-          onChangeText={setName}
-          style={styles.input}
-        />
-        <TextInput
-          placeholder="Fees"
-          value={fees}
-          onChangeText={setFees}
-          keyboardType="numeric"
-          style={styles.input}
-        />
-        <Button color={"green"} title="Add Course" onPress={handleAddCourse} />
-      </View>
-    </View>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={styles.keyboardView}
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+          <View style={styles.container}>
+            <Text style={styles.title}>Add Course</Text>
+            <TextInput
+              placeholder="Course Name"
+              value={name}
+              onChangeText={setName}
+              style={styles.input}
+            />
+            <TextInput
+              placeholder="Fees"
+              value={fees}
+              onChangeText={setFees}
+              keyboardType="numeric"
+              style={styles.input}
+            />
+            <Button
+              color="green"
+              title="Add Course"
+              onPress={handleAddCourse}
+            />
+          </View>
+        </ScrollView>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 };
 
 export default AddCourse;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-    alignItems: "center",
+  keyboardView: { flex: 1 },
+  scrollContainer: {
+    flexGrow: 1,
     justifyContent: "center",
-    width: "100%",
+    alignItems: "center",
+    padding: 16,
   },
+  container: { width: "100%", alignItems: "center" },
   title: { fontSize: 24, fontWeight: "bold", marginBottom: 16 },
   input: {
     borderWidth: 1,
@@ -86,14 +113,5 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     borderRadius: 4,
     width: "90%",
-  },
-  courseItem: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 10,
-    paddingVertical: 4,
-    borderBottomWidth: 1,
-    borderColor: "#ccc",
   },
 });
