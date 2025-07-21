@@ -1,5 +1,6 @@
 import { usePagination } from "@/src/components/RUComponents/useLocalPagination";
 import { handleLocalDeleteData } from "@/src/db/deleted/handleLocalDeleteData";
+import { dbRName } from "@/src/db/operations/utils";
 import { Feather, Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React from "react";
@@ -27,10 +28,9 @@ const ViewSubject = () => {
     limit: 20,
     sortByOrder: "desc",
   });
-  console.log();
   const { data: coursesData } = usePagination({
     tableName: "courses",
-    limit: 100,
+    limit: 20,
     sortByOrder: "desc",
   });
 
@@ -46,7 +46,10 @@ const ViewSubject = () => {
 
   // Example delete handler
   const handleDeleteCourse = async (id: number) => {
-    const result = await handleLocalDeleteData({ route: "/subjects", id });
+    const result = await handleLocalDeleteData({
+      route: `/${dbRName?.subjects}`,
+      id,
+    });
 
     if (result.success) {
       handleRefresh(); // refresh UI
@@ -67,11 +70,6 @@ const ViewSubject = () => {
         },
       ]
     );
-  };
-  // Example edit handler
-  const handleEdit = (item: any) => {
-    // navigation or router logic here
-    Alert.alert("Edit", `Edit subject: ${item.name}`);
   };
 
   return (

@@ -1,5 +1,6 @@
 import { handleLocalPostData } from "@/src/db/created/handleLocalPostData";
 import { getSingleRecordByColumn } from "@/src/db/dbGlobalFn/getSingleRecordByColumn";
+import { dbRName } from "@/src/db/operations/utils";
 import { router } from "expo-router";
 import React, { useState } from "react";
 import {
@@ -29,7 +30,7 @@ const AddCourse = () => {
 
     try {
       const existing = await getSingleRecordByColumn(
-        "courses",
+        `${dbRName?.courses}`,
         "name",
         trimmedName
       );
@@ -39,7 +40,7 @@ const AddCourse = () => {
       }
 
       const result = await handleLocalPostData({
-        route: "/courses",
+        route: `/${dbRName?.courses}`,
         data: { name: trimmedName, fees: Number(fees) },
         dataType: "json",
       });

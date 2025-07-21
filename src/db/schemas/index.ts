@@ -1,7 +1,8 @@
+import { dbRName } from "../operations/utils";
 import { courseSchema } from "./courseSchema";
 import { subjectSchema } from "./subjectSchema";
 
 export const schemas = [
-  { tableName: "courses", schema: courseSchema },
-  { tableName: "subjects", schema: subjectSchema },
+  { tableName: `${dbRName?.courses}`, schema: courseSchema },
+  { tableName: `${dbRName?.subjects}`, schema: subjectSchema },
 ];
