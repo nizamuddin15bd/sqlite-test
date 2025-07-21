@@ -1,4 +1,4 @@
-import { handleLocalPostData } from "@/src/components/RUComponents/handleLocalPostData";
+import { handleLocalPostData } from "@/src/db/created/handleLocalPostData";
 import { getSingleRecordByColumn } from "@/src/db/dbGlobalFn/getSingleRecordByColumn";
 import { router } from "expo-router";
 import React, { useState } from "react";

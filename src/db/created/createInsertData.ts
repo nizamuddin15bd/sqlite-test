@@ -1,6 +1,6 @@
 import { db } from "../connection";
 
-export const insertData = async ({
+export const createInsertData = async ({
   table,
   data,
 }: {
@@ -27,6 +27,9 @@ export const insertData = async ({
       };
     }
     console.error(`Insert error in ${table}:`, err);
-    return { success: false, message: "Insert failed" };
+    return {
+      success: false,
+      message: `Insert failed: ${err?.message || "Unknown error"}`,
+    };
   }
 };

@@ -1,5 +1,5 @@
-import { updateCourse } from "@/src/db/courseService";
 import { getSingleRecordByColumn } from "@/src/db/dbGlobalFn/getSingleRecordByColumn";
+import { handleLocalUpdateData } from "@/src/db/updated/handleLocalUpdateData";
 import useGlobleFormHandler from "@/src/hooks/useGlobleFormHandler";
 import { router, useLocalSearchParams } from "expo-router";
 import React from "react";
@@ -51,12 +51,17 @@ const EditCourse = () => {
       return;
     }
 
-    const result = await updateCourse({
+    // const result = await updateCourse({
+    //   id: courseId,
+    //   name: trimmedName,
+    //   fees: Number(values.fees),
+    // });
+    const result = await handleLocalUpdateData({
+      route: "/courses",
       id: courseId,
-      name: trimmedName,
-      fees: Number(values.fees),
+      data: { name: trimmedName, fees: Number(values.fees) },
+      dataType: "json",
     });
-
     if (!result.success) {
       Alert.alert("Error", result.message);
       return;

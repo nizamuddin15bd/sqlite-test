@@ -1,8 +1,6 @@
 import { Course } from "@/types";
 import { updateData } from "../components/RUComponents/updateData";
-import { db } from "./connection";
 import { searchByColumn } from "./dbGlobalFn/searchByColumn";
-import { buildSqlFilters } from "./dbGlobalFn/sqlBuilder";
 
 // export const insertCourse = async (course: Course) => {
 //   try {
@@ -63,34 +61,34 @@ import { buildSqlFilters } from "./dbGlobalFn/sqlBuilder";
 //   }
 // };
 
-export const getCourses = async ({
-  limit,
-  offset,
-  searchQuery = "",
-  sortByOrder = "desc",
-}: {
-  limit: number;
-  offset: number;
-  searchQuery?: string;
-  sortByOrder?: "asc" | "desc";
-}): Promise<Course[]> => {
-  try {
-    const baseQuery = "SELECT * FROM courses";
-    const { fullClause, params } = buildSqlFilters({
-      searchQuery,
-      sortByOrder,
-      limit,
-      offset,
-      searchFields: ["name"], // search in multiple fields
-    });
+// export const getCourses = async ({
+//   limit,
+//   offset,
+//   searchQuery = "",
+//   sortByOrder = "desc",
+// }: {
+//   limit: number;
+//   offset: number;
+//   searchQuery?: string;
+//   sortByOrder?: "asc" | "desc";
+// }): Promise<Course[]> => {
+//   try {
+//     const baseQuery = "SELECT * FROM courses";
+//     const { fullClause, params } = buildSqlFilters({
+//       searchQuery,
+//       sortByOrder,
+//       limit,
+//       offset,
+//       searchFields: ["name"], // search in multiple fields
+//     });
 
-    const finalQuery = `${baseQuery} ${fullClause}`;
-    return await db.getAllAsync<Course>(finalQuery, params);
-  } catch (err) {
-    console.error("Error fetching courses:", err);
-    return [];
-  }
-};
+//     const finalQuery = `${baseQuery} ${fullClause}`;
+//     return await db.getAllAsync<Course>(finalQuery, params);
+//   } catch (err) {
+//     console.error("Error fetching courses:", err);
+//     return [];
+//   }
+// };
 export const updateCourse = async (course: {
   id: number;
   name: string;

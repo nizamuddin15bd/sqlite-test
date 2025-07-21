@@ -1,4 +1,5 @@
-import { createInsertData } from "@/src/db/created/createInsertData";
+// handleLocalPostData.ts
+import { createInsertData } from "./createInsertData";
 
 export const handleLocalPostData = async ({
   route,
@@ -10,7 +11,7 @@ export const handleLocalPostData = async ({
   data: FormData | Record<string, any>;
   formatted?: boolean;
   dataType?: "json" | "formData";
-}) => {
+}): Promise<{ success: boolean; message?: string }> => {
   try {
     const resolvedDataType =
       dataType ?? (formatted === true ? "formData" : "json");
@@ -27,11 +28,10 @@ export const handleLocalPostData = async ({
 
     const table = route.replace("/", ""); // e.g., "/courses" → "courses"
 
-    // Removed duplicate check here
-
-    return await createInsertData({ table, data: parsedData });
-  } catch (err) {
+    const result = await createInsertData({ table, data: parsedData });
+    return result;
+  } catch (err: any) {
     console.error("handleLocalPostData error:", err);
-    return { success: false, message: "Local insert failed" };
+    return { success: false, message: err?.message ?? "Local insert failed" };
   }
 };

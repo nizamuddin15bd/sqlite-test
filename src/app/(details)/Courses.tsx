@@ -1,10 +1,11 @@
-import { deleteLocalData } from "@/src/components/RUComponents/deleteLocalData";
 import ListFooter from "@/src/components/RUComponents/ListFooter";
 import { usePagination } from "@/src/components/RUComponents/useLocalPagination";
+import { handleLocalDeleteData } from "@/src/db/deleted/handleLocalDeleteData";
 import { Feather, Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useState } from "react";
 import {
+  Alert,
   FlatList,
   StyleSheet,
   Text,
@@ -30,22 +31,46 @@ const Courses = () => {
     search: searchQuery, // passed as safe string
     sortByOrder: "desc",
   });
-
+  console.log(data);
   const handleSearch = (text: string) => {
     setSearchQuery(text);
   };
+  // const handleDeleteCourse = async (id: number) => {
+  //   try {
+  //     const result = await deleteLocalData({ table: "courses", id });
+  //     if (result.success) {
+  //       // refresh list or UI
+  //       handleRefresh();
+  //     } else {
+  //       // console.warn(result.message);
+  //     }
+  //   } catch (error) {
+  //     console.error("Delete failed", error);
+  //   }
+  // };
   const handleDeleteCourse = async (id: number) => {
-    try {
-      const result = await deleteLocalData({ table: "courses", id });
-      if (result.success) {
-        // refresh list or UI
-        handleRefresh();
-      } else {
-        // console.warn(result.message);
-      }
-    } catch (error) {
-      console.error("Delete failed", error);
+    const result = await handleLocalDeleteData({ route: "/courses", id });
+
+    if (result.success) {
+      handleRefresh(); // refresh UI
+    } else {
+      console.warn("Delete failed:", result.message);
     }
+  };
+
+  const confirmDeleteCourse = (id: number) => {
+    Alert.alert(
+      "Delete Course",
+      "Are you sure you want to delete this course?",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: () => handleDeleteCourse(id),
+        },
+      ]
+    );
   };
   return (
     <View style={styles.container}>
@@ -87,12 +112,11 @@ const Courses = () => {
             <View style={styles.editandDeleteContainer}>
               <TouchableOpacity
                 style={styles.deletedBtn}
-                onPress={() => handleDeleteCourse(item.id!)}
+                onPress={() => confirmDeleteCourse(item.id!)}
               >
-                <Text>
-                  <Ionicons name="trash" size={24} color="red" />
-                </Text>
+                <Ionicons name="trash" size={24} color="red" />
               </TouchableOpacity>
+
               <TouchableOpacity
                 style={styles.EditBtn}
                 onPress={() =>
