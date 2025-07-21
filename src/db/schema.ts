@@ -74,6 +74,9 @@ async function initDB() {
   try {
     // await db.execAsync("DROP TABLE IF EXISTS subjects;");
     // await db.execAsync("DROP TABLE IF EXISTS courses;");
+    // await dropTables(["courses", "subjects"]);
+    // await dropTables("courses");
+    // await dropTables();
 
     await createTable("courses", courseSchema);
     await createTable("subjects", subjectSchema);

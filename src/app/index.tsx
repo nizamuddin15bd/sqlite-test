@@ -6,7 +6,8 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { deleteLocalData } from "../components/RUComponents/deleteLocalData";
 import { handleLocalPostData } from "../components/RUComponents/handleLocalPostData";
 import { usePagination } from "../components/RUComponents/useLocalPagination";
-import { initDB } from "../db/schema";
+import { initDB } from "../db/initDB";
+// import { initDB } from "../db/schema";
 
 const Home = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -30,12 +31,15 @@ const Home = () => {
   const [name, setName] = useState("");
   const [fees, setFees] = useState("");
 
+  // useEffect(() => {
+  //   const setup = async () => {
+  //     await initDB();
+  //     loadCourses();
+  //   };
+  //   setup();
+  // }, []);
   useEffect(() => {
-    const setup = async () => {
-      await initDB();
-      loadCourses();
-    };
-    setup();
+    initDB();
   }, []);
 
   const loadCourses = async () => {

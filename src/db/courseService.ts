@@ -1,7 +1,6 @@
 import { Course } from "@/types";
 import { updateData } from "../components/RUComponents/updateData";
 import { db } from "./connection";
-import { insertData } from "./dbGlobalFn/insertData";
 import { searchByColumn } from "./dbGlobalFn/searchByColumn";
 import { buildSqlFilters } from "./dbGlobalFn/sqlBuilder";
 
@@ -16,15 +15,15 @@ import { buildSqlFilters } from "./dbGlobalFn/sqlBuilder";
 //     console.error("Error inserting course:", err);
 //   }
 // };
-export const insertCourse = async (course: Course) => {
-  return await insertData({
-    table: "courses",
-    data: {
-      name: course.name,
-      fees: course.fees,
-    },
-  });
-};
+// export const insertCourse = async (course: Course) => {
+//   return await insertData({
+//     table: "courses",
+//     data: {
+//       name: course.name,
+//       fees: course.fees,
+//     },
+//   });
+// };
 
 // export const getCourses = async (): Promise<Course[]> => {
 //   try {

@@ -8,7 +8,7 @@ interface UsePaginationProps {
   fetchNumber?: number;
   revalidateKey?: string;
   tableName: string;
-   sortByOrder?: "asc" | "desc";
+  sortByOrder?: "asc" | "desc";
 }
 
 export const usePagination = ({
@@ -18,7 +18,7 @@ export const usePagination = ({
   limit = 10,
   fetchNumber = Infinity,
   revalidateKey = "",
-    sortByOrder = "desc",
+  sortByOrder = "desc",
 }: UsePaginationProps) => {
   const [initialLoader, setInitialLoader] = useState(true);
   const [data, setData] = useState<any[]>([]);
@@ -34,18 +34,19 @@ export const usePagination = ({
   };
 
   const buildQuery = (pageNo: number) => {
-  const offset = (pageNo - 1) * limit;
-  const escapedSearch = escapeSearch(search.trim());
-  const whereClause = escapedSearch ? `WHERE name LIKE '%${escapedSearch}%'` : "";
+    const offset = (pageNo - 1) * limit;
+    const escapedSearch = escapeSearch(search.trim());
+    const whereClause = escapedSearch
+      ? `WHERE name LIKE '%${escapedSearch}%'`
+      : "";
 
-  const orderClause = `ORDER BY id ${sortByOrder.toUpperCase()}`;
+    const orderClause = `ORDER BY id ${sortByOrder.toUpperCase()}`;
 
-  return {
-    dataQuery: `SELECT * FROM ${tableName} ${whereClause} ${orderClause} LIMIT ${limit} OFFSET ${offset}`,
-    countQuery: `SELECT COUNT(*) as total FROM ${tableName} ${whereClause}`,
+    return {
+      dataQuery: `SELECT * FROM ${tableName} ${whereClause} ${orderClause} LIMIT ${limit} OFFSET ${offset}`,
+      countQuery: `SELECT COUNT(*) as total FROM ${tableName} ${whereClause}`,
+    };
   };
-};
-
 
   const fetchData = async (requestedPage: number, isRefresh = false) => {
     try {
@@ -62,8 +63,8 @@ export const usePagination = ({
         setPageNo(requestedPage);
         setHasMore(
           cappedData.length < total &&
-          newData.length === limit &&
-          cappedData.length < fetchNumber
+            newData.length === limit &&
+            cappedData.length < fetchNumber
         );
 
         return cappedData;

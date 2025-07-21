@@ -21,7 +21,7 @@ const Courses = () => {
     loadMore,
     initialLoader,
     loadingMore,
-    refreshing,
+    // refreshing,
     totalResult,
     hasMore,
   } = usePagination({
@@ -30,7 +30,7 @@ const Courses = () => {
     search: searchQuery, // passed as safe string
     sortByOrder: "desc",
   });
-  console.log("courses data", data);
+
   const handleSearch = (text: string) => {
     setSearchQuery(text);
   };
@@ -41,7 +41,7 @@ const Courses = () => {
         // refresh list or UI
         handleRefresh();
       } else {
-        console.warn(result.message);
+        // console.warn(result.message);
       }
     } catch (error) {
       console.error("Delete failed", error);
