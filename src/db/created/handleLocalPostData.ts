@@ -26,7 +26,7 @@ export const handleLocalPostData = async ({
       parsedData = data;
     }
 
-    const table = route.replace("/", ""); // e.g., "/courses" → "courses"
+    const table = route.replace("/", "");
 
     const result = await createInsertData({ table, data: parsedData });
     return result;

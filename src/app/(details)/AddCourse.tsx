@@ -34,10 +34,6 @@ const AddCourse = () => {
         trimmedName
       );
       if (existing) {
-        // Alert.alert(
-        //   "Duplicate Course",
-        //   `Course "${trimmedName}" already exists.`
-        // );
         setError(`Course "${trimmedName}" already exists.`);
         return;
       }
@@ -47,8 +43,8 @@ const AddCourse = () => {
         data: { name: trimmedName, fees: Number(fees) },
         dataType: "json",
       });
-      console.log("AddCourse result", result);
-      if (result?.message) {
+
+      if (result.success) {
         setName("");
         setFees("");
         router.push("/(details)/Courses");

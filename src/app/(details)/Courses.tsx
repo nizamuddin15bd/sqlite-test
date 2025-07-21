@@ -31,7 +31,8 @@ const Courses = () => {
     search: searchQuery, // passed as safe string
     sortByOrder: "desc",
   });
-  console.log(data);
+  // console.log("Courses data", data);
+  // console.log(data);
   const handleSearch = (text: string) => {
     setSearchQuery(text);
   };
@@ -79,6 +80,20 @@ const Courses = () => {
         style={styles.addBtn}
       >
         <Text style={styles.addBtnText}>+ Add Course</Text>
+      </TouchableOpacity>
+      {/* Subjects */}
+      <TouchableOpacity
+        onPress={() => router.push("/(details)/AddSubject")}
+        style={[styles.addBtn, { bottom: 85 }]}
+      >
+        <Text style={styles.addBtnText}>+ Add Subject</Text>
+      </TouchableOpacity>
+      {/* View Subject */}
+      <TouchableOpacity
+        onPress={() => router.push("/(details)/ViewSubject")}
+        style={[styles.addBtn, { bottom: 135 }]}
+      >
+        <Text style={styles.addBtnText}>View Subject</Text>
       </TouchableOpacity>
       <TextInput
         style={{ borderWidth: 1, borderColor: "green", borderRadius: 10 }}
