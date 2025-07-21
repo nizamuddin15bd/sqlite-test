@@ -30,7 +30,7 @@ const Courses = () => {
     search: searchQuery, // passed as safe string
     sortByOrder: "desc",
   });
-  // console.log("courses data", data);
+  console.log("courses data", data);
   const handleSearch = (text: string) => {
     setSearchQuery(text);
   };

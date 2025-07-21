@@ -43,7 +43,7 @@ const AddCourse = () => {
         data: { name: trimmedName, fees: Number(fees) },
         dataType: "json",
       });
-
+      console.log("AddCourse result", result);
       if (result?.success) {
         setName("");
         setFees("");

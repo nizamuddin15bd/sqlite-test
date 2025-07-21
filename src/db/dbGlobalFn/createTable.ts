@@ -1,4 +1,3 @@
-// createTable.ts
 import { db } from "../connection";
 
 export const createTable = async (
@@ -13,9 +12,10 @@ export const createTable = async (
   `;
 
   try {
-    await db.execAsync(createTableSQL);
+    // await db.execAsync(createTableSQL);
+    await db.runAsync(createTableSQL);
     console.log(`Table "${tableName}" created or already exists.`);
-  } catch (error) {
-    console.error(`Error creating table "${tableName}":`, error);
+  } catch (err) {
+    console.error(`Error creating table "${tableName}":`, err);
   }
 };
