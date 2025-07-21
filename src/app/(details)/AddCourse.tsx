@@ -19,10 +19,13 @@ import {
 const AddCourse = () => {
   const [name, setName] = useState("");
   const [fees, setFees] = useState("");
-
+  const [error, setError] = React.useState<string | null>(null);
   const handleAddCourse = async () => {
     const trimmedName = name.trim();
-    if (!trimmedName || !fees) return;
+    if (!trimmedName || !fees) {
+      setError("Please fill all fields");
+      return;
+    }
 
     try {
       const existing = await getSingleRecordByColumn(
@@ -31,10 +34,11 @@ const AddCourse = () => {
         trimmedName
       );
       if (existing) {
-        Alert.alert(
-          "Duplicate Course",
-          `Course "${trimmedName}" already exists.`
-        );
+        // Alert.alert(
+        //   "Duplicate Course",
+        //   `Course "${trimmedName}" already exists.`
+        // );
+        setError(`Course "${trimmedName}" already exists.`);
         return;
       }
 
@@ -44,7 +48,7 @@ const AddCourse = () => {
         dataType: "json",
       });
       console.log("AddCourse result", result);
-      if (result?.success) {
+      if (result?.message) {
         setName("");
         setFees("");
         router.push("/(details)/Courses");
@@ -82,6 +86,15 @@ const AddCourse = () => {
               keyboardType="numeric"
               style={styles.input}
             />
+            <Text
+              style={{
+                textAlign: "center",
+                color: "red",
+                marginVertical: error ? 10 : 0,
+              }}
+            >
+              {error}
+            </Text>
             <Button
               color="green"
               title="Add Course"

@@ -2,6 +2,7 @@ import { updateCourse } from "@/src/db/courseService";
 import { getSingleRecordByColumn } from "@/src/db/dbGlobalFn/getSingleRecordByColumn";
 import useGlobleFormHandler from "@/src/hooks/useGlobleFormHandler";
 import { router, useLocalSearchParams } from "expo-router";
+import React from "react";
 import {
   Alert,
   Button,
@@ -26,11 +27,13 @@ const EditCourse = () => {
 
     //   price: userDatas?.price || "",
   });
-
+  const [error, setError] = React.useState<string | null>(null);
   const handleSubmit = async () => {
     const trimmedName = values?.name?.trim();
 
     if (!trimmedName || !values?.fees) {
+      // If any field is empty, set error
+      setError("Please fill all fields");
       Alert.alert("Error", "Please fill all fields");
       return;
     }
@@ -38,12 +41,13 @@ const EditCourse = () => {
     const existing: { id?: number; name?: string; fees?: number } | null =
       await getSingleRecordByColumn("courses", "name", trimmedName);
 
-    // ✅ Check if the name exists and it's not the current course
+    // If course name already exists and it's not the current course, set error
     if (existing && existing.id !== courseId) {
-      Alert.alert(
-        "Duplicate Course",
-        `Course "${trimmedName}" already exists.`
-      );
+      setError(`Course "${trimmedName}" already exists.`);
+      // Alert.alert(
+      //   "Duplicate Course",
+      //   `Course "${trimmedName}" already exists.`
+      // );
       return;
     }
 
@@ -90,7 +94,15 @@ const EditCourse = () => {
               keyboardType="numeric"
               style={styles.input}
             />
-
+            <Text
+              style={{
+                textAlign: "center",
+                color: "red",
+                marginVertical: error ? 10 : 0,
+              }}
+            >
+              {error}
+            </Text>
             <Button color="green" title="Save Changes" onPress={handleSubmit} />
           </View>
         </ScrollView>

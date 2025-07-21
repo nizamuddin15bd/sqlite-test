@@ -18,6 +18,7 @@ const useGlobleFormHandler = <T extends FormFields>(
   const [errors, setErrors] = useState<FormErrors>({});
   const [loading, setLoading] = useState<boolean>(false); // 🔥 Added loading state
   const [isloading, setIsLoading] = useState<boolean>(false); // 🔥 Added loading state
+  // const [error, setError] = useState<string | null>(null); // 🔥 Added error state
   const refs = useRef<Record<string, React.MutableRefObject<string>>>({});
 
   // Dynamic Refs Management
