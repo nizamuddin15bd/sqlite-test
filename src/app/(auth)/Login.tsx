@@ -1,5 +1,6 @@
 import { usePagination } from "@/src/components/RUComponents/useLocalPagination";
 import { dbRName } from "@/src/db/operations/utils";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import React, { useState } from "react";
 import {
@@ -24,7 +25,7 @@ const Login = () => {
       Alert.alert("Error", "Please enter both email and password");
       return;
     }
-    // Case-insensitive email check
+
     const inputEmail = username.trim().toLowerCase();
     const user = Array.isArray(data)
       ? data.find(
@@ -34,13 +35,24 @@ const Login = () => {
             item.password === password
         )
       : undefined;
-    console.log("students", user);
+
     if (user) {
-      Alert.alert("Success", "Logged in!");
-      router.push({
-        pathname: "/(details)/StudentsDasboard",
-        params: { username: user.name }, // Pass user ID if needed
-      });
+      try {
+        await AsyncStorage.setItem("isLogin", "true"); // ✅ Save login status
+        await AsyncStorage.setItem(
+          "user",
+          JSON.stringify({ username: user.name })
+        );
+        // Optional: save full user
+
+        Alert.alert("Success", "Logged in!");
+        router.push({
+          pathname: "/(details)/StudentsDasboard",
+          params: { username: user.name },
+        });
+      } catch (error) {
+        Alert.alert("Storage Error", "Failed to save login state.");
+      }
     } else {
       Alert.alert(
         "Error",

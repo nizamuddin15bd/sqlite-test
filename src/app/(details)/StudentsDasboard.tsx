@@ -1,14 +1,30 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router, useLocalSearchParams } from "expo-router";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 const StudentsDasboard = () => {
   const param = useLocalSearchParams();
+  const [username, setUsername] = useState("");
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const user = await AsyncStorage.getItem("user");
+      if (user) {
+        const parsed = JSON.parse(user);
+        setUsername(parsed.username);
+      }
+    };
+
+    fetchUser();
+  }, []);
 
   const handleLogout = () => {
     // Add any logout logic here if needed
+    AsyncStorage.removeItem("isLogin");
     router.push("/(auth)/Login");
   };
+  console.log("user", AsyncStorage.getItem("user"));
 
   const feature = [
     {
@@ -40,21 +56,44 @@ const StudentsDasboard = () => {
   // You can export this function if you want to use it elsewhere
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Welcome {param?.username}</Text>
-      <View>
-        {feature?.map((item) => {
-          return (
-            <TouchableOpacity
-              key={item.id}
-
-              //   onPress={() => router.push(item.screen)}
-            >
-              <Image source={item?.image} style={{ width: 30, height: 30 }} />
-              <Text>{item.lable}</Text>
-            </TouchableOpacity>
-          );
-        })}
+      <View style={{ marginTop: 70 }}>
+        <Text style={styles.title}>Welcome {username} 👋</Text>
+        <View
+          style={{
+            flexDirection: "row",
+            flexWrap: "wrap",
+            justifyContent: "space-between",
+            width: "90%",
+            alignSelf: "center",
+          }}
+        >
+          {feature?.map((item) => {
+            return (
+              <TouchableOpacity
+                key={item.id}
+                // onPress={() => router.push(item.screen)}
+                style={{
+                  width: "48%", // Ensures two cards per row with spacing
+                  height: 100,
+                  marginBottom: 12,
+                  // borderWidth: 1,
+                  backgroundColor: "#fff",
+                  borderRadius: 10,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 7,
+                }}
+              >
+                <Image source={item?.image} style={{ width: 40, height: 40 }} />
+                <Text style={{ fontSize: 16, fontWeight: "800" }}>
+                  {item.lable}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
       </View>
+
       <TouchableOpacity style={styles.logoutBtn} onPress={handleLogout}>
         <Text style={styles.logoutText}>Logout</Text>
       </TouchableOpacity>
@@ -72,7 +111,7 @@ export default StudentsDasboard;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
+    // justifyContent: "center",
     alignItems: "center",
     padding: 24,
     backgroundColor: "#f7f7f7",
@@ -85,11 +124,14 @@ const styles = StyleSheet.create({
   },
   logoutBtn: {
     backgroundColor: "#e53935",
-    paddingVertical: 14,
+    paddingVertical: 10,
     borderRadius: 8,
     alignItems: "center",
     marginTop: 8,
-    width: 120,
+    width: 90,
+    position: "absolute",
+    top: 20,
+    right: 40,
   },
   logoutText: {
     color: "#fff",

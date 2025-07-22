@@ -1,4 +1,5 @@
 // Home.tsx
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
@@ -8,6 +9,7 @@ import { initDB } from "../db/initDB";
 
 const Home = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
   const { data, handleRefresh } = usePagination({
     tableName: "courses",
     limit: 20,
@@ -16,9 +18,31 @@ const Home = () => {
   });
 
   useEffect(() => {
+    const checkLogin = async () => {
+      try {
+        const isLogin = await AsyncStorage.getItem("isLogin");
+        const userName = await AsyncStorage.getItem("userName"); // optional
+        if (isLogin === "true") {
+          router.replace({
+            pathname: "/(details)/StudentsDasboard",
+            params: { username: userName ?? "" },
+          });
+        } else {
+          setIsLoading(false);
+          router.replace("/(auth)/Login");
+        }
+      } catch (error) {
+        console.log("Login check failed:", error);
+        setIsLoading(false);
+      }
+    };
+
+    // initDB();
+    checkLogin();
+  }, []);
+  useEffect(() => {
     initDB();
   }, []);
-
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Choose User Type</Text>
