@@ -1,4 +1,6 @@
 import { usePagination } from "@/src/components/RUComponents/useLocalPagination";
+import { handleLocalPostData } from "@/src/db/created/handleLocalPostData";
+import { getSingleRecordByColumn } from "@/src/db/dbGlobalFn/getSingleRecordByColumn";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
@@ -24,15 +26,47 @@ const Signup = () => {
   const [selectedCourse, setSelectedCourse] = useState<any>(null);
   const [password, setPassword] = useState("");
 
-  const handleRegister = () => {
+  const handleRegister = async () => {
     if (!fullName || !email || !selectedCourse || !password) {
       Alert.alert("Error", "Please fill all fields");
       return;
     }
-    // Registration logic here
-    Alert.alert("Success", "Registered successfully!");
-    // Optionally, navigate to login page
-    // router.push("/(auth)/Login");
+    try {
+      // Check for duplicate email
+      const existing = await getSingleRecordByColumn(
+        "students",
+        "email",
+        email
+      );
+      if (existing) {
+        Alert.alert("Error", "Email already exists. Please use another email.");
+        return;
+      }
+
+      const result = await handleLocalPostData({
+        route: "/students",
+        data: {
+          name: fullName,
+          email,
+          course_id: selectedCourse,
+          password,
+        },
+        dataType: "json",
+      });
+
+      if (result.success) {
+        Alert.alert("Success", "Registered successfully!");
+        setFullName("");
+        setEmail("");
+        setSelectedCourse(null);
+        setPassword("");
+        router.push("/(auth)/Login");
+      } else {
+        Alert.alert("Error", result.message || "Registration failed");
+      }
+    } catch (error) {
+      Alert.alert("Error", "An unexpected error occurred");
+    }
   };
 
   return (

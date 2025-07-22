@@ -1,3 +1,5 @@
+import { usePagination } from "@/src/components/RUComponents/useLocalPagination";
+import { dbRName } from "@/src/db/operations/utils";
 import { router } from "expo-router";
 import React, { useState } from "react";
 import {
@@ -10,19 +12,37 @@ import {
 } from "react-native";
 
 const Login = () => {
+  const { data } = usePagination({
+    tableName: `${dbRName?.students}`,
+  });
+  // console.log("user Data", data);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (!username || !password) {
-      Alert.alert("Error", "Please enter both username and password");
+      Alert.alert("Error", "Please enter both email and password");
       return;
     }
-    // Dummy login logic
-    if (username === "admin" && password === "admin") {
+    // Case-insensitive email check
+    const inputEmail = username.trim().toLowerCase();
+    const user = Array.isArray(data)
+      ? data.find(
+          (item: any) =>
+            typeof item.email === "string" &&
+            item.email.trim().toLowerCase() === inputEmail &&
+            item.password === password
+        )
+      : undefined;
+    console.log("students", user);
+    if (user) {
       Alert.alert("Success", "Logged in!");
+      router.push("/(details)/StudentsDasboard");
     } else {
-      Alert.alert("Error", "Invalid credentials");
+      Alert.alert(
+        "Error",
+        "Please sign up or enter your current email and password"
+      );
     }
   };
 

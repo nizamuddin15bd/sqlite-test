@@ -28,6 +28,7 @@ export const TEXT_NOT_NULL = `${TEXT} ${NOT_NULL}`;
 export const INTEGER_NOT_NULL = `${INTEGER} ${NOT_NULL}`;
 export const REAL_NOT_NULL = `${REAL} ${NOT_NULL}`;
 export const BLOB_NOT_NULL = `${BLOB} ${NOT_NULL}`;
+export const UNIQUE_NOT_NULL = `${UNIQUE} ${NOT_NULL}`;
 
 // 🌍 Foreign Key
 export const foreignKey = (
