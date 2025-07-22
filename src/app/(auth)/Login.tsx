@@ -37,7 +37,10 @@ const Login = () => {
     console.log("students", user);
     if (user) {
       Alert.alert("Success", "Logged in!");
-      router.push("/(details)/StudentsDasboard");
+      router.push({
+        pathname: "/(details)/StudentsDasboard",
+        params: { username: user.name }, // Pass user ID if needed
+      });
     } else {
       Alert.alert(
         "Error",
